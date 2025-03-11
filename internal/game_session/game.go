@@ -1,13 +1,16 @@
-package main
+package gamesession
 
 import (
 	"bufio"
 	"fmt"
+	"viselnica/internal/hangman"
+	"viselnica/internal/words"
 )
 
 type gameSession struct {
-	allWords           words
+	allWords           words.Words
 	userMaxAttemptions int
+	hangman            hangman.Hangman
 
 	userMistakes        int
 	gameWord            string
@@ -16,23 +19,25 @@ type gameSession struct {
 	numOfGuessedLetters int
 }
 
-func NewGameSession(allWords words, userAttemptions int) gameSession {
+func NewGameSession(allWords words.Words, userAttemptions int, hangman hangman.Hangman) gameSession {
 	return gameSession{
 		allWords:           allWords,
 		userMaxAttemptions: userAttemptions,
+		hangman:            hangman,
 	}
 }
 
-func (gs *gameSession) Start(userInput *bufio.Scanner) {
-	if len([]rune(gs.gameWord)) < 5 {
-		fmt.Printf("Попробуй угадать секретное слово из %d букв\n", len([]rune(gs.gameWord)))
-		fmt.Println("Так как слово меньше или равно четырём символам, то играем без подсказок")
-		fmt.Println("На вход требуется только одна буква")
+func (gs *gameSession) Reset() {
+	gs.userMistakes = 0
+	gs.gameWord = gs.allWords.GetRandomWord()
+	gs.userWordCondition = make([]string, len(gs.gameWord))
+	gs.usedLetters = make(map[string]struct{})
+	gs.numOfGuessedLetters = 0
+}
 
-	} else {
-		fmt.Printf("Попробуй угадать секретное слово из %d букв\n", len([]rune(gs.gameWord)))
-		fmt.Println("На вход требуется только одна буква")
-	}
+func (gs *gameSession) Start(userInput *bufio.Scanner) {
+	fmt.Printf("Попробуй угадать секретное слово из %d букв\n", len([]rune(gs.gameWord)))
+	fmt.Println("На вход требуется только одна буква")
 
 	for userInput.Scan() {
 		input := userInput.Text()
@@ -59,6 +64,10 @@ func (gs *gameSession) Start(userInput *bufio.Scanner) {
 			fmt.Printf("Осталось попыток %d\n", gs.userMaxAttemptions-gs.userMistakes)
 		} else {
 			fmt.Println("Вы не угадали букву!")
+
+			hangManState := gs.userMistakes - 1
+			gs.hangman.Draw(hangManState)
+
 			fmt.Printf("Осталось попыток %d\n", gs.userMaxAttemptions-gs.userMistakes)
 
 			if gs.userMistakes == gs.userMaxAttemptions {
@@ -127,12 +136,4 @@ func (gs *gameSession) checkSymbol(symbol string) bool {
 	}
 
 	return found
-}
-
-func (gs *gameSession) Reset() {
-	gs.userMistakes = 0
-	gs.gameWord = gs.allWords.getRandomWord()
-	gs.userWordCondition = make([]string, len(gs.gameWord))
-	gs.usedLetters = make(map[string]struct{})
-	gs.numOfGuessedLetters = 0
 }

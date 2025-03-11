@@ -1,4 +1,4 @@
-package main
+package words
 
 import (
 	"bufio"
@@ -7,20 +7,22 @@ import (
 	"strings"
 )
 
-type words struct {
+type Words struct {
 	wordsFromTxt []string
 }
 
-func NewWords(filePath string) (words, error) {
-	wordsFromTxt, err := getWordsFromTxt(filePath)
+func NewWords(filePath string) (Words, error) {
+	words := Words{}
+
+	wordsFromTxt, err := words.getWordsFromTxt(filePath)
 	if err != nil {
-		return words{}, err
+		return Words{}, err
 	}
 
-	return words{wordsFromTxt: wordsFromTxt}, nil
+	return Words{wordsFromTxt: wordsFromTxt}, nil
 }
 
-func getWordsFromTxt(filePath string) ([]string, error) {
+func (w *Words) getWordsFromTxt(filePath string) ([]string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
@@ -39,7 +41,7 @@ func getWordsFromTxt(filePath string) ([]string, error) {
 	return words, nil
 }
 
-func (w words) getRandomWord() string {
+func (w *Words) GetRandomWord() string {
 	r := rand.Intn(len(w.wordsFromTxt))
 	return w.wordsFromTxt[r]
 }
