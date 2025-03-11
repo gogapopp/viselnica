@@ -3,6 +3,7 @@ package gamesession
 import (
 	"bufio"
 	"fmt"
+	"strings"
 	"viselnica/internal/hangman"
 	"viselnica/internal/words"
 )
@@ -109,6 +110,8 @@ func (gs *gameSession) isValidUserInput(input []rune) bool {
 }
 
 func (gs *gameSession) isLetterUsed(str string) bool {
+	str = strings.ToLower(str)
+
 	if _, ok := gs.usedLetters[str]; ok {
 		return true
 	}
@@ -120,6 +123,8 @@ func (gs *gameSession) isLetterUsed(str string) bool {
 
 func (gs *gameSession) checkSymbol(symbol string) bool {
 	found := false
+
+	symbol = strings.ToLower(symbol)
 
 	s := []rune(symbol)[0]
 
