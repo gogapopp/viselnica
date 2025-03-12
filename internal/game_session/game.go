@@ -131,14 +131,22 @@ func (gs *gameSession) checkSymbol(symbol string) bool {
 	for i, ch := range gs.gameWord {
 		if ch == s {
 			gs.userWordCondition[i] = string(ch)
-			gs.numOfGuessedLetters++
+			gs.increaseNumOfGuessedLetters()
 			found = true
 		}
 	}
 
 	if !found {
-		gs.userMistakes++
+		gs.increaseUserMistakes()
 	}
 
 	return found
+}
+
+func (gs *gameSession) increaseNumOfGuessedLetters() {
+	gs.numOfGuessedLetters++
+}
+
+func (gs *gameSession) increaseUserMistakes() {
+	gs.userMistakes++
 }
