@@ -11,8 +11,7 @@ import (
 )
 
 const (
-	// т.к. 5 ASCII вариантов висельника
-	userMaxAttemptions = 5
+	userMaxAttemptions = 5 // т.к. 5 ASCII вариантов висельника
 	wordsPath          = "./words.txt"
 )
 
