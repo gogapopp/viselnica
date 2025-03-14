@@ -13,7 +13,7 @@ import (
 const (
 	// т.к. 5 ASCII вариантов висельника
 	userMaxAttemptions = 5
-	wordsPath          = "../words.txt"
+	wordsPath          = "./words.txt"
 )
 
 func main() {
